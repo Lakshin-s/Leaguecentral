@@ -15,7 +15,7 @@ Functional Requirements | Non-Functional Requirements
 
 ## Basic Design of UI, Hierarchy and Interactive elements
 ### Wireframes
-![C:\Users\Narmadha\New folder (3)\LeagueCentral\static\images\wireframe.png](wireframe.png)
+![wireframe.png](wireframe.png)
 ![alt text](wireframe2.png)
 
 
