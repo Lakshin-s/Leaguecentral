@@ -99,7 +99,7 @@ Why: Ideal for paragraphs and match reports without causing eye strain
 ### Login page flowchart
 
 
-![alt text](flowchart2.png)
+![flowchart2.png](flowchart2.png)
 
 
 ### Test Case 1 - Successful Login
