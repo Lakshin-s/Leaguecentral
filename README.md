@@ -71,25 +71,25 @@ Why: Ideal for paragraphs and match reports without causing eye strain
 
 
 ## Alternate Wireframe
-![alt text](wireframe3.png)
+![wireframe3.png](wireframe3.png)
 ### Home page - How is it different from the other design?
 - Less elements on home page
 - Colour palette and font considered
 
 
-![alt text](wireframemarketplace.png)
+![wireframemarketplace.png](wireframemarketplace.png)
 ### Marketplace - How is it different from other design?
 - Colour palette and font considered
 - Included an advertisement
 - Added Filters section
 
 
-![alt text](fixtures.png)
+![fixtures.png](fixtures.png)
 #### Fixtures
 
 
-![alt text](transfer.png)
-![alt text](latestnews.png)
+![transfer.png](transfer.png)
+![latestnews.png](latestnews.png)
 #### News - How is it different from the other design?
 - Added 'transfers' news
 - Color palette and font considered
