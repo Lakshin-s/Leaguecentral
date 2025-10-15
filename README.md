@@ -16,7 +16,7 @@ Functional Requirements | Non-Functional Requirements
 ## Basic Design of UI, Hierarchy and Interactive elements
 ### Wireframes
 ![wireframe.png](wireframe.png)
-![alt text](wireframe2.png)
+![wireframe2.png](wireframe2.png)
 
 
 ### Colour Palette
