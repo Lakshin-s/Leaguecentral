@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeagueCentral - News</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo a {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #667eea;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .logo a:hover {
+      color: #764ba2;
+    }
+
+    .links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .links a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .links a:hover {
+      color: #667eea;
+    }
+
+    .links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #667eea;
+      transition: width 0.3s;
+    }
+
+    .links a:hover::after {
+      width: 100%;
+    }
+
+    section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: white;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .news-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      color: white;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .news-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .news-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .news-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .news-image-container {
+      width: 100%;
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .news-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .news-image-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+
+    .news-content {
+      padding: 1.5rem;
+    }
+
+    .news-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      color: #999;
+    }
+
+    .news-category {
+      background: #667eea;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 15px;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    .news-title {
+      color: #333;
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .news-excerpt {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .read-more {
+      color: #667eea;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: gap 0.3s;
+    }
+
+    .news-card:hover .read-more {
+      gap: 1rem;
+    }
+
+    .transfers-container {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      animation: slideUp 0.5s;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .transfers-title {
+      color: #667eea;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .transfer-item {
+      display: grid;
+      grid-template-columns: 2fr auto 2fr;
+      align-items: center;
+      padding: 1.25rem;
+      border-bottom: 1px solid #f1f1f1;
+      transition: all 0.3s;
+      gap: 2rem;
+    }
+
+    .transfer-item:hover {
+      background: #f8f9fa;
+      transform: scale(1.01);
+    }
+
+    .transfer-item:last-child {
+      border-bottom: none;
+    }
+
+    .transfer-from,
+    .transfer-to {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .transfer-from {
+      justify-content: flex-end;
+    }
+
+    .club-badge {
+      width: 40px;
+      height: 40px;
+      background: #f1f1f1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .club-name {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .transfer-middle {
+      text-align: center;
+      min-width: 200px;
+    }
+
+    .player-name {
+      font-weight: bold;
+      color: #667eea;
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .transfer-arrow {
+      font-size: 1.5rem;
+      color: #667eea;
+      margin: 0.5rem 0;
+    }
+
+    .transfer-fee {
+      color: #28a745;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .transfer-type {
+      color: #999;
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 20px 20px 0 0;
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: white;
+      transition: all 0.3s;
+      z-index: 10;
+    }
+
+    .close-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: rotate(90deg);
+    }
+
+    .modal-image-container {
+      width: 100%;
+      height: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-image-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+    }
+
+    .modal-title {
+      font-size: 2rem;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .modal-body {
+      padding: 2rem;
+    }
+
+    .modal-body p {
+      color: #333;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+    }
+
+    footer {
+      background: rgba(255, 255, 255, 0.95);
+      text-align: center;
+      padding: 2rem;
+      color: #333;
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .news-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .transfer-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .transfer-from,
+      .transfer-to {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo"><a href="index.html">LeagueCentral</a></div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="standings.html">Standings</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="news.html">News</a>
+      <a href="login.html">Login</a>
+    </div>
+  </nav>
+
+  <section>
+    <h1>Football News</h1>
+
+    <div class="news-section">
+      <h2 class="section-title">Latest Headlines</h2>
+      <div class="news-grid" id="newsGrid"></div>
+    </div>
+
+    <div class="news-section">
+      <h2 class="section-title">Transfer News</h2>
+      <div class="transfers-container">
+        <h3 class="transfers-title">Latest Transfers - January 2025</h3>
+        <div id="transfersList"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal" id="newsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close-btn" onclick="closeModal()">×</button>
+        <div id="modalImage"></div>
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <div class="modal-meta" id="modalMeta"></div>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 LeagueCentral | All Rights Reserved</p>
+  </footer>
+
+  <script>
+    const newsArticles = [
+      {
+        id: 1,
+        title: "Liverpool Extends Lead at Top of Premier League",
+        category: "Premier League",
+        date: "October 14, 2025",
+        image: "", // PASTE YOUR IMAGE LINK HERE (leave empty for placeholder)
+        excerpt: "Liverpool's impressive 2-1 victory over Manchester City has extended their lead at the top of the Premier League table to five points...",
+        fullArticle: `Liverpool's impressive 2-1 victory over Manchester City has extended their lead at the top of the Premier League table to five points, sending a clear message to their title rivals.
+
+        The match at Anfield was a thrilling encounter that showcased the best of English football. Mohamed Salah opened the scoring in the 23rd minute with a trademark finish, cutting inside from the right and curling the ball past the goalkeeper. Manchester City responded through Erling Haaland's powerful header just before halftime.
+
+        The decisive moment came in the 67th minute when Luis Diaz scored a stunning solo goal, weaving through the City defense before slotting home. Despite City's late pressure and several close chances, Liverpool's defense held firm to secure all three points.
+
+        Manager Jürgen Klopp praised his team's performance: "This was a statement win. The lads showed incredible character and quality. We knew City would come at us, but we stood strong and took our chances when they came."
+
+        With this victory, Liverpool now sits on 65 points from 28 games, five points clear of second-placed Arsenal. The Reds are showing the form that has made them champions before, and with their remaining fixtures looking favorable, they are strong favorites to lift the title come May.`
+      },
+      {
+        id: 2,
+        title: "Real Madrid and Barcelona Set for El Clasico Showdown",
+        category: "La Liga",
+        date: "October 13, 2025",
+        image: "", // PASTE YOUR IMAGE LINK HERE
+        excerpt: "The most anticipated match in world football is upon us as Real Madrid prepares to host Barcelona in a title-defining El Clasico...",
+        fullArticle: `The most anticipated match in world football is upon us as Real Madrid prepares to host Barcelona in a title-defining El Clasico at the Santiago Bernabéu this weekend.
+
+        With just three points separating the two Spanish giants at the top of La Liga, this match could prove pivotal in the race for the championship. Real Madrid currently leads with 65 points, but Barcelona has been in scintillating form, winning their last eight consecutive matches.
+
+        Real Madrid's Vinicius Junior has been in exceptional form this season, scoring 24 goals and providing 13 assists. His pace and trickery on the left wing will be crucial to Los Blancos' chances. Meanwhile, Barcelona's young sensation Lamine Yamal has emerged as one of the world's best players, terrorizing defenses with his skill and creativity.
+
+        Carlo Ancelotti, Real Madrid's experienced manager, remains confident: "El Clasico is always special. The players know what this match means to our fans and to the club. We're ready for the challenge."
+
+        Barcelona manager Xavi Hernández countered: "We respect Madrid, but we fear no one. Our team is playing the best football in Europe right now, and we're going to the Bernabéu to win."
+
+        Historical stats favor Real Madrid at home, but with both teams in exceptional form, this promises to be an unforgettable encounter that could shape the destiny of this season's La Liga title.`
+      },
+      {
+        id: 3,
+        title: "Inter Milan Dominates Serie A with Stellar Defense",
+        category: "Serie A",
+        date: "October 13, 2025",
+        image: "", // PASTE YOUR IMAGE LINK HERE
+        excerpt: "Inter Milan's incredible defensive record continues to be the foundation of their Serie A title charge, having conceded just 22 goals...",
+        fullArticle: `Inter Milan's incredible defensive record continues to be the foundation of their Serie A title charge, having conceded just 22 goals in 27 matches this season.
+
+        The Nerazzurri's defensive solidity has been built on the partnership between Alessandro Bastoni and Francesco Acerbi, with goalkeeper André Onana providing world-class shot-stopping behind them. Their defensive organization has been nothing short of remarkable.
+
+        Manager Simone Inzaghi has implemented a tactical system that makes Inter extremely difficult to break down. "Defense wins championships," Inzaghi stated in his recent press conference. "But we're not just defending - we're controlling games from back to front."
+
+        The numbers speak for themselves: Inter has kept 18 clean sheets this season, more than any other team in Europe's top five leagues. Their expected goals against (xGA) of 24.5 suggests their defensive performance isn't just luck - it's systematic excellence.
+
+        While Lautaro Martinez and Marcus Thuram have provided the goals up front, with 38 combined strikes, it's the defensive foundation that has given Inter their six-point cushion at the top of Serie A.
+
+        With just 11 games remaining, Inter Milan looks destined to claim their second consecutive Scudetto, and their defensive record will be remembered as one of the best in Serie A history.`
+      },
+      {
+        id: 4,
+        title: "Young Stars Shine in UEFA Champions League",
+        category: "Champions League",
+        date: "October 12, 2025",
+        image: "", // PASTE YOUR IMAGE LINK HERE
+        excerpt: "This season's Champions League has been a showcase for emerging talent, with several young players making their mark on Europe's biggest stage...",
+        fullArticle: `This season's Champions League has been a showcase for emerging talent, with several young players making their mark on Europe's biggest stage.
+
+        At just 19 years old, Barcelona's Lamine Yamal has been a revelation, scoring 7 goals and providing 9 assists in the Champions League. His performances have drawn comparisons to a young Lionel Messi, and many believe he could be the next Ballon d'Or winner.
+
+        Real Madrid's Jude Bellingham continues to exceed expectations in his second season with Los Blancos. The English midfielder has seamlessly adapted to Spanish football, contributing 11 goals from midfield in the Champions League alone.
+
+        Bayern Munich's Jamal Musiala has also been exceptional, with his dribbling ability and creativity causing havoc for opposition defenses. The German international has registered 8 goals and 6 assists in European competition this season.
+
+        UEFA's technical director emphasized the importance of these young talents: "We're witnessing a generational shift in football. These young players aren't just promising - they're already world-class performers who are defining the modern game."
+
+        Manchester City's Phil Foden, now 25, has embraced a leadership role and has been instrumental in City's Champions League campaign with his versatility and technical brilliance.
+
+        As the competition moves into its crucial knockout stages, these young stars will be expected to deliver when the pressure is at its highest. The future of football looks bright indeed.`
+      },
+      {
+        id: 5,
+        title: "Premier League Introduces New VAR Protocol",
+        category: "Premier League",
+        date: "October 11, 2025",
+        image: "", // PASTE YOUR IMAGE LINK HERE
+        excerpt: "The Premier League has announced significant changes to its VAR system following feedback from clubs, players, and fans...",
+        fullArticle: `The Premier League has announced significant changes to its VAR system following feedback from clubs, players, and fans throughout the season.
+
+        The new protocol, which will be implemented immediately, includes semi-automated offside technology similar to that used in the FIFA World Cup. This technology uses 12 dedicated tracking cameras to monitor 29 data points on each player's body, creating a virtual skeleton that can precisely determine offside positions.
+
+        Premier League Chief Executive Richard Masters explained: "We've listened to the concerns about VAR delays and inconsistency. These changes will make decisions faster and more accurate while maintaining the integrity of the game."
+
+        Key changes include:
+        - Semi-automated offside decisions reducing average check time from 90 seconds to 25 seconds
+        - In-stadium explanation of VAR decisions via big screens and PA systems
+        - Improved communication between on-field referees and VAR officials
+        - Monthly publication of VAR decision reports with detailed explanations
+
+        Managers have generally welcomed the changes. Arsenal's Mikel Arteta commented: "Transparency is what we needed. If fans can understand why decisions are made, it will help restore confidence in the system."
+
+        However, some concerns remain about subjective decisions like handball and foul interpretations. The Premier League has committed to ongoing dialogue with all stakeholders to continue improving the system.
+
+        The changes represent the most significant overhaul of VAR since its introduction to English football, and many hope it will finally address the controversies that have plagued the system.`
+      },
+      {
+        id: 6,
+        title: "Women's Football Continues Record-Breaking Growth",
+        category: "Women's Football",
+        date: "October 10, 2025",
+        image: "", // PASTE YOUR IMAGE LINK HERE
+        excerpt: "Women's football is experiencing unprecedented growth, with attendance records being broken across Europe's top leagues...",
+        fullArticle: `Women's football is experiencing unprecedented growth, with attendance records being broken across Europe's top leagues and investment reaching new heights.
+
+        The FA Women's Super League recently announced a new broadcast deal worth £65 million over three years, representing a 400% increase from the previous agreement. This investment will help clubs improve facilities, increase player salaries, and enhance the overall quality of competition.
+
+        Barcelona Femení continues to set the standard, regularly attracting crowds of over 80,000 fans to Camp Nou for key matches. Their recent Champions League fixture against Chelsea drew 91,553 spectators, the largest crowd ever for a women's club football match.
+
+        UEFA President Aleksander Čeferin stated: "Women's football is no longer emerging - it has arrived. The quality, the passion, and the global interest are phenomenal. We're committed to supporting this growth with increased prize money and better infrastructure."
+
+        Player salaries have also increased significantly. Top players in England's WSL now earn upwards of £200,000 annually, with some stars at the biggest clubs commanding even higher wages. This professionalization is allowing more players to focus entirely on football without needing second jobs.
+
+        Youth participation has skyrocketed, with girls' football registration in England up 84% over the past three years. This grassroots growth promises an even brighter future for the women's game.
+
+        Challenges remain, particularly around achieving equal pay and media coverage parity with men's football, but the momentum is undeniable. Women's football is not just growing - it's thriving.`
+      }
+    ];
+
+    const transfers = [
+      { player: "Victor Osimhen", from: "Napoli", fromBadge: "🔵", to: "Chelsea", toBadge: "🔵", fee: "€120M", type: "Permanent" },
+      { player: "Kylian Mbappé", from: "PSG", fromBadge: "🔴", to: "Real Madrid", toBadge: "⚪", fee: "Free Transfer", type: "Contract Expired" },
+      { player: "Bruno Guimarães", from: "Newcastle", fromBadge: "⚫", to: "Man City", toBadge: "🔵", fee: "€95M", type: "Permanent" },
+      { player: "Florian Wirtz", from: "Bayer Leverkusen", fromBadge: "🔴", to: "Bayern Munich", toBadge: "🔴", fee: "€110M", type: "Permanent" },
+      { player: "Rafael Leão", from: "AC Milan", fromBadge: "🔴", to: "Barcelona", toBadge: "🔴", fee: "€88M", type: "Permanent" },
+      { player: "Declan Rice", from: "Arsenal", fromBadge: "🔴", to: "Real Madrid", toBadge: "⚪", fee: "€105M", type: "Permanent" },
+      { player: "João Félix", from: "Atletico Madrid", fromBadge: "🔴", to: "Man United", toBadge: "🔴", fee: "€75M", type: "Permanent" },
+      { player: "Alessandro Bastoni", from: "Inter Milan", fromBadge: "🔵", to: "Liverpool", toBadge: "🔴", fee: "€70M", type: "Permanent" },
+      { player: "Lautaro Martinez", from: "Inter Milan", fromBadge: "🔵", to: "Arsenal", toBadge: "🔴", fee: "€95M", type: "Permanent" },
+      { player: "Khvicha Kvaratskhelia", from: "Napoli", fromBadge: "🔵", to: "PSG", toBadge: "🔴", fee: "€85M", type: "Permanent" },
+      { player: "William Saliba", from: "Arsenal", fromBadge: "🔴", to: "Real Madrid", toBadge: "⚪", fee: "€90M", type: "Permanent" },
+      { player: "Dominik Szoboszlai", from: "Liverpool", fromBadge: "🔴", to: "Bayern Munich", toBadge: "🔴", fee: "€65M", type: "Permanent" },
+      { player: "Rodrygo", from: "Real Madrid", fromBadge: "⚪", to: "Man City", toBadge: "🔵", fee: "€100M", type: "Permanent" },
+      { player: "Gavi", from: "Barcelona", fromBadge: "🔴", to: "Man United", toBadge: "🔴", fee: "€80M", type: "Permanent" },
+      { player: "Marcus Rashford", from: "Man United", fromBadge: "🔴", to: "PSG", toBadge: "🔴", fee: "€70M", type: "Permanent" },
+      { player: "Alphonso Davies", from: "Bayern Munich", fromBadge: "🔴", to: "Real Madrid", toBadge: "⚪", fee: "€55M", type: "Permanent" },
+    ];
+
+    // Helper function to check if image URL is valid
+    function isValidImageUrl(url) {
+      return url && url.trim() !== '' && url !== 'urimage';
+    }
+
+    function renderNews() {
+      const grid = document.getElementById('newsGrid');
+      grid.innerHTML = newsArticles.map(article => {
+        const hasImage = isValidImageUrl(article.image);
+        return `
+          <div class="news-card" onclick="showArticle(${article.id})">
+            <div class="news-image-container">
+              ${hasImage ? 
+                `<img src="${article.image}" alt="${article.title}" class="news-image" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'news-image-placeholder\\'>📰</div>';">` :
+                `<div class="news-image-placeholder">📰</div>`
+              }
+            </div>
+            <div class="news-content">
+              <div class="news-meta">
+                <span class="news-category">${article.category}</span>
+                <span>${article.date}</span>
+              </div>
+              <h3 class="news-title">${article.title}</h3>
+              <p class="news-excerpt">${article.excerpt}</p>
+              <span class="read-more">Read More →</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderTransfers() {
+      const list = document.getElementById('transfersList');
+      list.innerHTML = transfers.map(transfer => `
+        <div class="transfer-item">
+          <div class="transfer-from">
+            <span class="club-name">${transfer.from}</span>
+            <div class="club-badge">${transfer.fromBadge}</div>
+          </div>
+          <div class="transfer-middle">
+            <div class="player-name">${transfer.player}</div>
+            <div class="transfer-arrow">→</div>
+            <div class="transfer-fee">${transfer.fee}</div>
+            <div class="transfer-type">${transfer.type}</div>
+          </div>
+          <div class="transfer-to">
+            <div class="club-badge">${transfer.toBadge}</div>
+            <span class="club-name">${transfer.to}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showArticle(id) {
+      const article = newsArticles.find(a => a.id === id);
+      const hasImage = isValidImageUrl(article.image);
+      
+      document.getElementById('modalImage').innerHTML = `
+        <div class="modal-image-container">
+          ${hasImage ? 
+            `<img src="${article.image}" alt="${article.title}" class="modal-image" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'modal-image-placeholder\\'>📰</div>';">` :
+            `<div class="modal-image-placeholder">📰</div>`
+          }
+        </div>
+      `;
+      
+      document.getElementById('modalTitle').textContent = article.title;
+      document.getElementById('modalMeta').innerHTML = `
+        <span>${article.category}</span>
+        <span>•</span>
+        <span>${article.date}</span>
+      `;
+      document.getElementById('modalBody').innerHTML = article.fullArticle.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');
+      document.getElementById('newsModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('newsModal').classList.remove('active');
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('newsModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+
+    renderNews();
+    renderTransfers();
+  </script>
+</body>
+</html>
