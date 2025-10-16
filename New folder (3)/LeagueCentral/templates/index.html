@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeagueCentral - Home</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo a {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #667eea;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .logo a:hover {
+      color: #764ba2;
+    }
+
+    .links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .links a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .links a:hover {
+      color: #667eea;
+    }
+
+    .links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #667eea;
+      transition: width 0.3s;
+    }
+
+    .links a:hover::after {
+      width: 100%;
+    }
+
+    /* Carousel */
+    .carousel-section {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      overflow: hidden;
+      margin-bottom: 3rem;
+    }
+
+    .carousel-container {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(0.22, 0.9, 0.3, 1);
+      height: 100%;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .carousel-caption {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      padding: 2rem 3rem;
+      border-radius: 15px;
+      color: white;
+      text-align: center;
+      max-width: 600px;
+      animation: slideUp 0.6s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    .carousel-caption h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .carousel-caption p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #667eea;
+    }
+
+    .carousel-btn:hover {
+      background: white;
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .carousel-btn.prev { left: 2rem; }
+    .carousel-btn.next { right: 2rem; }
+
+    .carousel-dots {
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .carousel-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+    }
+
+    .carousel-dot.active {
+      background: white;
+      transform: scale(1.3);
+    }
+
+    /* Main Content */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem 3rem 2rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-header h2 {
+      color: white;
+      font-size: 2rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .section-header a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.5rem 1.5rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 25px;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .section-header a:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* News Grid */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .news-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .news-card.visible {
+      animation: cardAppear 0.6s ease forwards;
+    }
+
+    @keyframes cardAppear {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .news-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .news-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+
+    .news-card:hover img {
+      transform: scale(1.1);
+    }
+
+    .news-card-content {
+      padding: 1.5rem;
+    }
+
+    .news-card h3 {
+      color: #333;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .news-card p {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Matches Section */
+    .matches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .match-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .match-card.visible {
+      animation: cardAppear 0.6s ease forwards;
+    }
+
+    .match-card:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .match-card strong {
+      display: block;
+      color: #333;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .match-date {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .reminder-btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 25px;
+      background: #667eea;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .reminder-btn:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .reminder-btn.set {
+      background: #28a745;
+      pointer-events: none;
+    }
+
+    .reminder-btn .text {
+      transition: opacity 0.3s ease;
+    }
+
+    .reminder-btn.set .text {
+      opacity: 0;
+    }
+
+    .reminder-btn .checkmark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-size: 1.3rem;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .reminder-btn.set .checkmark {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    /* Transfer List */
+    .transfer-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .transfer-item {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+
+    .transfer-item.visible {
+      animation: slideInLeft 0.6s ease forwards;
+    }
+
+    @keyframes slideInLeft {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .transfer-item:hover {
+      transform: translateX(10px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .player-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #667eea;
+    }
+
+    .transfer-info {
+      flex: 1;
+    }
+
+    .transfer-info strong {
+      display: block;
+      color: #333;
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .transfer-info small {
+      color: #666;
+    }
+
+    .transfer-fee {
+      background: #667eea;
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    footer {
+      background: rgba(255, 255, 255, 0.95);
+      text-align: center;
+      padding: 2rem;
+      color: #333;
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .carousel-section {
+        height: 350px;
+      }
+
+      .carousel-caption {
+        padding: 1.5rem;
+        bottom: 2rem;
+      }
+
+      .carousel-caption h2 {
+        font-size: 1.5rem;
+      }
+
+      .transfer-item {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo"><a href="index.html">LeagueCentral</a></div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="standings.html">Standings</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="news.html">News</a>
+      <a href="login.html">Login</a>
+    </div>
+  </nav>
+
+  <!-- Carousel -->
+  <section class="carousel-section">
+    <div class="carousel-container" id="carouselContainer">
+      <div class="carousel-slide">
+        <img src="C:\Users\Narmadha\New folder (3)\LeagueCentral\static\images\Sports Stadium Landscape Background, Wallpaper, Physical, Education Background Image And Wallpaper for Free Download.jpg" alt="Stadium">
+        <div class="carousel-caption">
+          <h2>Welcome to LeagueCentral</h2>
+          <p>Your ultimate destination for football news, standings, and exclusive merchandise</p>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img src="C:\Users\Narmadha\New folder (3)\LeagueCentral\static\images\download (10).jpg" alt="Match">
+        <div class="carousel-caption">
+          <h2>Haaland Inspires City Victory</h2>
+          <p>Erling Haaland's double secures a dominant 3-0 win at the Etihad</p>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img src="C:\Users\Narmadha\New folder (3)\LeagueCentral\static\images\452abffa542b148855c33324c060b191 (1).jpg" alt="Merchandise">
+        <div class="carousel-caption">
+          <h2>New Season Arrivals</h2>
+          <p>Check out the latest boots, jerseys, and footballs in our marketplace</p>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-btn prev" onclick="prevSlide()">‹</button>
+    <button class="carousel-btn next" onclick="nextSlide()">›</button>
+    <div class="carousel-dots" id="carouselDots"></div>
+  </section>
+
+  <div class="container">
+    <!-- Latest News -->
+    <div class="section-header">
+      <h2>Latest Headlines</h2>
+      <a href="news.html">See all news →</a>
+    </div>
+
+    <div class="news-grid">
+      <div class="news-card" onclick="location.href='news.html'">
+        <img src="C:\Users\Narmadha\New folder (3)\LeagueCentral\static\images\F2hgrwoWcAAzSrC.jpg" alt="Liverpool">
+        <div class="news-card-content">
+          <h3>Liverpool Snatch Dramatic Comeback</h3>
+          <p>Gakpo's stoppage-time strike seals a thrilling 3-2 victory in North London.</p>
+        </div>
+      </div>
+
+      <div class="news-card" onclick="location.href='news.html'">
+        <img src="C:\Users\Narmadha\New folder (3)\LeagueCentral\static\images\jude bellingham.jpg" alt="El Clasico">
+        <div class="news-card-content">
+          <h3>El Clásico: Barcelona V Real</h3>
+          <p>The most anticipated match in world football is upon us as Real Madrid prepares to host Barcelona in a title-defining El Clasico at the Santiago Bernabéu this weekend.</p>
+        </div>
+      </div>
+
+      <div class="news-card" onclick="location.href='news.html'">
+        <img src="C:\Users\Narmadha\New folder (3)\LeagueCentral\static\images\download (12).jpg" alt="Title race">
+        <div class="news-card-content">
+          <h3>Title Race Intensifies</h3>
+          <p>Inter Milan's incredible defensive record continues to be the foundation of their Serie A title charge, having conceded just 22 goals in 27 matches this season.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Matches -->
+    <div class="section-header">
+      <h2>Upcoming Matches</h2>
+    </div>
+
+    <div class="matches-grid">
+      <div class="match-card">
+        <strong>Manchester City vs Wolves</strong>
+        <div class="match-date">Premier League — 14 Sep 2025</div>
+        <button class="reminder-btn">
+          <span class="text">⏰ Set Reminder</span>
+          <span class="checkmark">✓</span>
+        </button>
+      </div>
+
+      <div class="match-card">
+        <strong>Arsenal vs Newcastle</strong>
+        <div class="match-date">Premier League — 16 Sep 2025</div>
+        <button class="reminder-btn">
+          <span class="text">⏰ Set Reminder</span>
+          <span class="checkmark">✓</span>
+        </button>
+      </div>
+
+      <div class="match-card">
+        <strong>Barcelona vs Real Madrid</strong>
+        <div class="match-date">La Liga — 17 Sep 2025</div>
+        <button class="reminder-btn">
+          <span class="text">⏰ Set Reminder</span>
+          <span class="checkmark">✓</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Transfer Highlights -->
+    <div class="section-header">
+      <h2>Transfer Highlights</h2>
+      <a href="news.html">All transfers →</a>
+    </div>
+
+    <div class="transfer-list">
+      <div class="transfer-item">
+        <img class="player-img" src="C:\Users\Narmadha\New folder (3)\LeagueCentral\static\images\images (1).jpg" alt="Player">
+        <div class="transfer-info">
+          <strong>João Silva</strong>
+          Manchester United ➝ Manchester City
+          <div><small>Midfielder • 12 Sep 2025</small></div>
+        </div>
+        <div class="transfer-fee">€180m</div>
+      </div>
+
+      <div class="transfer-item">
+        <img class="player-img" src="C:\Users\Narmadha\New folder (3)\LeagueCentral\static\images\images (2).jpg" alt="Player">
+        <div class="transfer-info">
+          <strong>Lucas Pereira</strong>
+          Benfica ➝ Barcelona
+          <div><small>Winger • 10 Sep 2025</small></div>
+        </div>
+        <div class="transfer-fee">€50m</div>
+      </div>
+
+      <div class="transfer-item">
+        <img class="player-img" src="C:\Users\Narmadha\New folder (3)\LeagueCentral\static\images\images.webp" alt="Player">
+        <div class="transfer-info">
+          <strong>Matteo Rossi</strong>
+          Napoli ➝ Juventus
+          <div><small>Striker • 9 Sep 2025</small></div>
+        </div>
+        <div class="transfer-fee">Swap + €15m</div>
+      </div>
+
+      <div class="transfer-item">
+        <img class="player-img" src="C:\Users\Narmadha\New folder (3)\LeagueCentral\static\images\images (3).jpg" alt="Player">
+        <div class="transfer-info">
+          <strong>Neymar Jr</strong>
+          Barcelona ➝ PSG
+          <div><small>Forward • 8 Sep 2025</small></div>
+        </div>
+        <div class="transfer-fee">€85m + Add-ons</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 LeagueCentral | All Rights Reserved</p>
+  </footer>
+
+  <script>
+    // Carousel functionality
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dotsContainer = document.getElementById('carouselDots');
+
+    // Create dots
+    slides.forEach((_, index) => {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot';
+      dot.onclick = () => goToSlide(index);
+      dotsContainer.appendChild(dot);
+    });
+
+    const dots = document.querySelectorAll('.carousel-dot');
+
+    function updateCarousel() {
+      const container = document.getElementById('carouselContainer');
+      container.style.transform = `translateX(-${currentSlide * 100}%)`;
+      
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+      });
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      updateCarousel();
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      updateCarousel();
+    }
+
+    function goToSlide(index) {
+      currentSlide = index;
+      updateCarousel();
+    }
+
+    // Auto-play carousel
+    let autoplayInterval = setInterval(nextSlide, 5000);
+
+    // Pause on hover
+    document.querySelector('.carousel-section').addEventListener('mouseenter', () => {
+      clearInterval(autoplayInterval);
+    });
+
+    document.querySelector('.carousel-section').addEventListener('mouseleave', () => {
+      autoplayInterval = setInterval(nextSlide, 5000);
+    });
+
+    // Initialize
+    updateCarousel();
+
+    // Reminder button functionality
+    document.querySelectorAll('.reminder-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        this.classList.add('set');
+      });
+    });
+
+    // Scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, index * 100);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.news-card, .match-card, .transfer-item').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

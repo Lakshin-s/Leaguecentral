@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeagueCentral - Standings</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo a {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #667eea;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .logo a:hover {
+      color: #764ba2;
+    }
+
+    .links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .links a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .links a:hover {
+      color: #667eea;
+    }
+
+    .links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #667eea;
+      transition: width 0.3s;
+    }
+
+    .links a:hover::after {
+      width: 100%;
+    }
+
+    section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: white;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .league-selector {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .league-btn {
+      background: white;
+      color: #667eea;
+      border: 2px solid transparent;
+      padding: 0.75rem 2rem;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      font-size: 1rem;
+    }
+
+    .league-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .league-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: white;
+    }
+
+    .standings-container {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      margin-bottom: 3rem;
+      animation: slideUp 0.5s;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .league-title {
+      color: #667eea;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .standings-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .standings-table thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .standings-table th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .standings-table th:first-child {
+      border-radius: 10px 0 0 0;
+    }
+
+    .standings-table th:last-child {
+      border-radius: 0 10px 0 0;
+    }
+
+    .standings-table tbody tr {
+      border-bottom: 1px solid #f1f1f1;
+      transition: all 0.3s;
+    }
+
+    .standings-table tbody tr:hover {
+      background: #f8f9fa;
+      transform: scale(1.01);
+    }
+
+    .standings-table td {
+      padding: 1rem;
+    }
+
+    .position {
+      font-weight: bold;
+      color: #667eea;
+      width: 50px;
+      text-align: center;
+    }
+
+    .team-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .team-badge {
+      width: 30px;
+      height: 30px;
+      background: #f1f1f1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .team-name {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .champion {
+      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+      border-left: 4px solid #ffd700;
+    }
+
+    .champions-league {
+      border-left: 4px solid #0066ff;
+    }
+
+    .europa-league {
+      border-left: 4px solid #ff9500;
+    }
+
+    .relegation {
+      border-left: 4px solid #ff4757;
+    }
+
+    .stats {
+      text-align: center;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .recent-matches {
+      margin-top: 3rem;
+    }
+
+    .section-title {
+      color: white;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .matches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .match-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .match-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .match-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .match-date {
+      color: #999;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .match-teams {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .team {
+      flex: 1;
+      text-align: center;
+    }
+
+    .team-logo {
+      width: 50px;
+      height: 50px;
+      background: #f1f1f1;
+      border-radius: 50%;
+      margin: 0 auto 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .team-name-match {
+      font-weight: 600;
+      color: #333;
+      font-size: 0.95rem;
+    }
+
+    .match-score {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #667eea;
+      padding: 0 1rem;
+    }
+
+    .match-status {
+      text-align: center;
+      padding: 0.5rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #666;
+      font-weight: 600;
+    }
+
+    .status-live {
+      background: #ff4757;
+      color: white;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      max-width: 700px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s;
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 20px 20px 0 0;
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .close-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: rotate(90deg);
+    }
+
+    .modal-match-info {
+      text-align: center;
+    }
+
+    .modal-teams {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .modal-team {
+      text-align: center;
+    }
+
+    .modal-team-logo {
+      width: 80px;
+      height: 80px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      margin: 0 auto 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .modal-score {
+      font-size: 3rem;
+      font-weight: bold;
+      padding: 0 2rem;
+    }
+
+    .modal-body {
+      padding: 2rem;
+    }
+
+    .stats-section {
+      margin-bottom: 2rem;
+    }
+
+    .stats-title {
+      color: #667eea;
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat-item {
+      background: #f8f9fa;
+      padding: 1.25rem;
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+
+    .stat-item:hover {
+      background: #e9ecef;
+      transform: translateY(-2px);
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .stat-label {
+      font-weight: 600;
+      color: #333;
+      font-size: 0.95rem;
+    }
+
+    .stat-values {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .stat-visual {
+      height: 8px;
+      background: #e1e1e1;
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+
+    .stat-fill-left {
+      position: absolute;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+    }
+
+    .stat-fill-right {
+      position: absolute;
+      right: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #764ba2 0%, #667eea 100%);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+    }
+
+    .events-list {
+      list-style: none;
+    }
+
+    .event-item {
+      padding: 0.75rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .event-time {
+      font-weight: bold;
+      color: #667eea;
+      min-width: 40px;
+    }
+
+    .event-icon {
+      font-size: 1.2rem;
+    }
+
+    footer {
+      background: rgba(255, 255, 255, 0.95);
+      text-align: center;
+      padding: 2rem;
+      color: #333;
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .standings-table {
+        font-size: 0.9rem;
+      }
+
+      .standings-table th,
+      .standings-table td {
+        padding: 0.5rem;
+      }
+
+      .matches-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo"><a href="index.html">LeagueCentral</a></div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="standings.html">Standings</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="news.html">News</a>
+      <a href="login.html">Login</a>
+    </div>
+  </nav>
+
+  <section>
+    <h1>League Standings</h1>
+
+    <div class="league-selector">
+      <button class="league-btn active" onclick="showLeague('premier')">Premier League</button>
+      <button class="league-btn" onclick="showLeague('laliga')">La Liga</button>
+      <button class="league-btn" onclick="showLeague('seriea')">Serie A</button>
+    </div>
+
+    <div class="standings-container" id="standingsContainer"></div>
+
+    <div class="recent-matches">
+      <h2 class="section-title">Recent Matches</h2>
+      <div class="matches-grid" id="matchesGrid"></div>
+    </div>
+  </section>
+
+  <div class="modal" id="matchModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close-btn" onclick="closeModal()">×</button>
+        <div class="modal-match-info">
+          <p id="modalDate"></p>
+          <div class="modal-teams">
+            <div class="modal-team">
+              <div class="modal-team-logo" id="modalHomeLogo"></div>
+              <h3 id="modalHomeTeam"></h3>
+            </div>
+            <div class="modal-score" id="modalScore"></div>
+            <div class="modal-team">
+              <div class="modal-team-logo" id="modalAwayLogo"></div>
+              <h3 id="modalAwayTeam"></h3>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 LeagueCentral | All Rights Reserved</p>
+  </footer>
+
+  <script>
+    const leaguesData = {
+      premier: {
+        name: "Premier League",
+        teams: [
+          { pos: 1, team: "Liverpool", badge: "🔴", played: 28, won: 20, drawn: 5, lost: 3, gf: 65, ga: 28, pts: 65, class: "champion" },
+          { pos: 2, team: "Arsenal", badge: "🔴", played: 28, won: 19, drawn: 6, lost: 3, gf: 63, ga: 25, pts: 63, class: "champions-league" },
+          { pos: 3, team: "Man City", badge: "🔵", played: 28, won: 18, drawn: 7, lost: 3, gf: 61, ga: 27, pts: 61, class: "champions-league" },
+          { pos: 4, team: "Chelsea", badge: "🔵", played: 28, won: 17, drawn: 6, lost: 5, gf: 55, ga: 32, pts: 57, class: "champions-league" },
+          { pos: 5, team: "Newcastle", badge: "⚫", played: 28, won: 15, drawn: 8, lost: 5, gf: 50, ga: 35, pts: 53, class: "europa-league" },
+          { pos: 6, team: "Man United", badge: "🔴", played: 28, won: 14, drawn: 7, lost: 7, gf: 48, ga: 38, pts: 49, class: "" },
+          { pos: 7, team: "Tottenham", badge: "⚪", played: 28, won: 13, drawn: 8, lost: 7, gf: 52, ga: 42, pts: 47, class: "" },
+          { pos: 8, team: "Aston Villa", badge: "🟣", played: 28, won: 12, drawn: 9, lost: 7, gf: 45, ga: 40, pts: 45, class: "" },
+          { pos: 9, team: "Brighton", badge: "🔵", played: 28, won: 11, drawn: 8, lost: 9, gf: 42, ga: 43, pts: 41, class: "" },
+          { pos: 10, team: "West Ham", badge: "🟤", played: 28, won: 10, drawn: 9, lost: 9, gf: 40, ga: 42, pts: 39, class: "" },
+        ]
+      },
+      laliga: {
+        name: "La Liga",
+        teams: [
+          { pos: 1, team: "Real Madrid", badge: "⚪", played: 27, won: 20, drawn: 5, lost: 2, gf: 62, ga: 22, pts: 65, class: "champion" },
+          { pos: 2, team: "Barcelona", badge: "🔴", played: 27, won: 19, drawn: 5, lost: 3, gf: 68, ga: 28, pts: 62, class: "champions-league" },
+          { pos: 3, team: "Atletico Madrid", badge: "🔴", played: 27, won: 18, drawn: 6, lost: 3, gf: 55, ga: 25, pts: 60, class: "champions-league" },
+          { pos: 4, team: "Athletic Bilbao", badge: "🔴", played: 27, won: 15, drawn: 7, lost: 5, gf: 48, ga: 30, pts: 52, class: "champions-league" },
+          { pos: 5, team: "Real Sociedad", badge: "🔵", played: 27, won: 13, drawn: 9, lost: 5, gf: 42, ga: 32, pts: 48, class: "europa-league" },
+          { pos: 6, team: "Villarreal", badge: "🟡", played: 27, won: 12, drawn: 8, lost: 7, gf: 45, ga: 38, pts: 44, class: "" },
+          { pos: 7, team: "Valencia", badge: "🟠", played: 27, won: 11, drawn: 9, lost: 7, gf: 40, ga: 35, pts: 42, class: "" },
+          { pos: 8, team: "Sevilla", badge: "⚪", played: 27, won: 10, drawn: 10, lost: 7, gf: 38, ga: 36, pts: 40, class: "" },
+          { pos: 9, team: "Real Betis", badge: "🟢", played: 27, won: 10, drawn: 8, lost: 9, gf: 35, ga: 38, pts: 38, class: "" },
+          { pos: 10, team: "Getafe", badge: "🔵", played: 27, won: 9, drawn: 9, lost: 9, gf: 32, ga: 36, pts: 36, class: "" },
+        ]
+      },
+      seriea: {
+        name: "Serie A",
+        teams: [
+          { pos: 1, team: "Inter Milan", badge: "🔵", played: 27, won: 21, drawn: 4, lost: 2, gf: 65, ga: 22, pts: 67, class: "champion" },
+          { pos: 2, team: "Juventus", badge: "⚫", played: 27, won: 18, drawn: 7, lost: 2, gf: 54, ga: 24, pts: 61, class: "champions-league" },
+          { pos: 3, team: "AC Milan", badge: "🔴", played: 27, won: 17, drawn: 6, lost: 4, gf: 58, ga: 30, pts: 57, class: "champions-league" },
+          { pos: 4, team: "Napoli", badge: "🔵", played: 27, won: 16, drawn: 7, lost: 4, gf: 52, ga: 28, pts: 55, class: "champions-league" },
+          { pos: 5, team: "Roma", badge: "🟡", played: 27, won: 15, drawn: 6, lost: 6, gf: 48, ga: 32, pts: 51, class: "europa-league" },
+          { pos: 6, team: "Lazio", badge: "🔵", played: 27, won: 13, drawn: 8, lost: 6, gf: 45, ga: 35, pts: 47, class: "" },
+          { pos: 7, team: "Atalanta", badge: "🔵", played: 27, won: 12, drawn: 9, lost: 6, gf: 50, ga: 38, pts: 45, class: "" },
+          { pos: 8, team: "Fiorentina", badge: "🟣", played: 27, won: 11, drawn: 9, lost: 7, gf: 42, ga: 38, pts: 42, class: "" },
+          { pos: 9, team: "Bologna", badge: "🔴", played: 27, won: 10, drawn: 10, lost: 7, gf: 38, ga: 36, pts: 40, class: "" },
+          { pos: 10, team: "Torino", badge: "🟤", played: 27, won: 9, drawn: 11, lost: 7, gf: 35, ga: 35, pts: 38, class: "" },
+        ]
+      }
+    };
+
+    const recentMatches = [
+      { home: "Liverpool", homeLogo: "🔴", away: "Man City", awayLogo: "🔵", homeScore: 2, awayScore: 1, date: "Oct 13, 2025", status: "FT", league: "Premier League" },
+      { home: "Real Madrid", homeLogo: "⚪", away: "Barcelona", awayLogo: "🔴", homeScore: 3, awayScore: 2, date: "Oct 13, 2025", status: "FT", league: "La Liga" },
+      { home: "Inter Milan", homeLogo: "🔵", away: "Juventus", awayLogo: "⚫", homeScore: 1, awayScore: 1, date: "Oct 14, 2025", status: "FT", league: "Serie A" },
+      { home: "Arsenal", homeLogo: "🔴", away: "Chelsea", awayLogo: "🔵", homeScore: 2, awayScore: 2, date: "Oct 12, 2025", status: "FT", league: "Premier League" },
+      { home: "Atletico Madrid", homeLogo: "🔴", away: "Real Sociedad", awayLogo: "🔵", homeScore: 3, awayScore: 0, date: "Oct 12, 2025", status: "FT", league: "La Liga" },
+      { home: "AC Milan", homeLogo: "🔴", away: "Napoli", awayLogo: "🔵", homeScore: 2, awayScore: 1, date: "Oct 13, 2025", status: "FT", league: "Serie A" },
+    ];
+
+    let currentLeague = 'premier';
+
+    function showLeague(league) {
+      currentLeague = league;
+      document.querySelectorAll('.league-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderStandings();
+    }
+
+    function renderStandings() {
+      const data = leaguesData[currentLeague];
+      const container = document.getElementById('standingsContainer');
+      
+      container.innerHTML = `
+        <h2 class="league-title">${data.name} 2025/26</h2>
+        <table class="standings-table">
+          <thead>
+            <tr>
+              <th>Pos</th>
+              <th>Team</th>
+              <th class="stats">P</th>
+              <th class="stats">W</th>
+              <th class="stats">D</th>
+              <th class="stats">L</th>
+              <th class="stats">GF</th>
+              <th class="stats">GA</th>
+              <th class="stats">GD</th>
+              <th class="stats">Pts</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.teams.map(team => `
+              <tr class="${team.class}">
+                <td class="position">${team.pos}</td>
+                <td>
+                  <div class="team-cell">
+                    <div class="team-badge">${team.badge}</div>
+                    <span class="team-name">${team.team}</span>
+                  </div>
+                </td>
+                <td class="stats">${team.played}</td>
+                <td class="stats">${team.won}</td>
+                <td class="stats">${team.drawn}</td>
+                <td class="stats">${team.lost}</td>
+                <td class="stats">${team.gf}</td>
+                <td class="stats">${team.ga}</td>
+                <td class="stats">${team.gf - team.ga}</td>
+                <td class="stats"><strong>${team.pts}</strong></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderMatches() {
+      const grid = document.getElementById('matchesGrid');
+      grid.innerHTML = recentMatches.map((match, index) => `
+        <div class="match-card" onclick="showMatchDetails(${index})">
+          <div class="match-date">${match.date} • ${match.league}</div>
+          <div class="match-teams">
+            <div class="team">
+              <div class="team-logo">${match.homeLogo}</div>
+              <div class="team-name-match">${match.home}</div>
+            </div>
+            <div class="match-score">${match.homeScore} - ${match.awayScore}</div>
+            <div class="team">
+              <div class="team-logo">${match.awayLogo}</div>
+              <div class="team-name-match">${match.away}</div>
+            </div>
+          </div>
+          <div class="match-status ${match.status === 'LIVE' ? 'status-live' : ''}">${match.status}</div>
+        </div>
+      `).join('');
+    }
+
+    function showMatchDetails(index) {
+      const match = recentMatches[index];
+      document.getElementById('modalDate').textContent = `${match.date} • ${match.league}`;
+      document.getElementById('modalHomeLogo').textContent = match.homeLogo;
+      document.getElementById('modalHomeTeam').textContent = match.home;
+      document.getElementById('modalAwayLogo').textContent = match.awayLogo;
+      document.getElementById('modalAwayTeam').textContent = match.away;
+      document.getElementById('modalScore').textContent = `${match.homeScore} - ${match.awayScore}`;
+      
+      const stats = generateMatchStats(match);
+      document.getElementById('modalBody').innerHTML = `
+        <div class="stats-section">
+          <h3 class="stats-title">Match Statistics</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-header">
+                <span class="stat-label">Possession</span>
+              </div>
+              <div class="stat-values">
+                <span>${stats.possession.home}%</span>
+                <span>${stats.possession.away}%</span>
+              </div>
+              <div class="stat-visual">
+                <div class="stat-fill-left" style="width: ${stats.possession.home}%"></div>
+                <div class="stat-fill-right" style="width: ${stats.possession.away}%"></div>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <div class="stat-header">
+                <span class="stat-label">Shots</span>
+              </div>
+              <div class="stat-values">
+                <span>${stats.shots.home}</span>
+                <span>${stats.shots.away}</span>
+              </div>
+              <div class="stat-visual">
+                <div class="stat-fill-left" style="width: ${(stats.shots.home / (stats.shots.home + stats.shots.away)) * 100}%"></div>
+                <div class="stat-fill-right" style="width: ${(stats.shots.away / (stats.shots.home + stats.shots.away)) * 100}%"></div>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <div class="stat-header">
+                <span class="stat-label">Shots on Target</span>
+              </div>
+              <div class="stat-values">
+                <span>${stats.shotsOnTarget.home}</span>
+                <span>${stats.shotsOnTarget.away}</span>
+              </div>
+              <div class="stat-visual">
+                <div class="stat-fill-left" style="width: ${(stats.shotsOnTarget.home / (stats.shotsOnTarget.home + stats.shotsOnTarget.away)) * 100}%"></div>
+                <div class="stat-fill-right" style="width: ${(stats.shotsOnTarget.away / (stats.shotsOnTarget.home + stats.shotsOnTarget.away)) * 100}%"></div>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <div class="stat-header">
+                <span class="stat-label">Corners</span>
+              </div>
+              <div class="stat-values">
+                <span>${stats.corners.home}</span>
+                <span>${stats.corners.away}</span>
+              </div>
+              <div class="stat-visual">
+                <div class="stat-fill-left" style="width: ${(stats.corners.home / (stats.corners.home + stats.corners.away)) * 100}%"></div>
+                <div class="stat-fill-right" style="width: ${(stats.corners.away / (stats.corners.home + stats.corners.away)) * 100}%"></div>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <div class="stat-header">
+                <span class="stat-label">Fouls</span>
+              </div>
+              <div class="stat-values">
+                <span>${stats.fouls.home}</span>
+                <span>${stats.fouls.away}</span>
+              </div>
+              <div class="stat-visual">
+                <div class="stat-fill-left" style="width: ${(stats.fouls.home / (stats.fouls.home + stats.fouls.away)) * 100}%"></div>
+                <div class="stat-fill-right" style="width: ${(stats.fouls.away / (stats.fouls.home + stats.fouls.away)) * 100}%"></div>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <div class="stat-header">
+                <span class="stat-label">Pass Accuracy</span>
+              </div>
+              <div class="stat-values">
+                <span>${stats.passAccuracy.home}%</span>
+                <span>${stats.passAccuracy.away}%</span>
+              </div>
+              <div class="stat-visual">
+                <div class="stat-fill-left" style="width: ${stats.passAccuracy.home}%"></div>
+                <div class="stat-fill-right" style="width: ${stats.passAccuracy.away}%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-section">
+          <h3 class="stats-title">Match Events</h3>
+          <ul class="events-list">
+            ${stats.events.map(event => `
+              <li class="event-item">
+                <span class="event-time">${event.time}'</span>
+                <span class="event-icon">${event.icon}</span>
+                <span>${event.text}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `;
+      
+      document.getElementById('matchModal').classList.add('active');
+    }
+
+    function generateMatchStats(match) {
+      // Generate realistic match statistics
+      const homeGoals = match.homeScore;
+      const awayGoals = match.awayScore;
+      
+      const homePossession = Math.min(70, Math.max(30, 40 + homeGoals * 5 + Math.random() * 15));
+      const awayPossession = 100 - homePossession;
+      
+      return {
+        possession: {
+          home: Math.round(homePossession),
+          away: Math.round(awayPossession)
+        },
+        shots: {
+          home: homeGoals * 3 + Math.floor(Math.random() * 8) + 4,
+          away: awayGoals * 3 + Math.floor(Math.random() * 8) + 4
+        },
+        shotsOnTarget: {
+          home: homeGoals + Math.floor(Math.random() * 4) + 2,
+          away: awayGoals + Math.floor(Math.random() * 4) + 2
+        },
+        corners: {
+          home: Math.floor(Math.random() * 8) + 3,
+          away: Math.floor(Math.random() * 8) + 3
+        },
+        fouls: {
+          home: Math.floor(Math.random() * 8) + 8,
+          away: Math.floor(Math.random() * 8) + 8
+        },
+        passAccuracy: {
+          home: Math.floor(Math.random() * 15) + 75,
+          away: Math.floor(Math.random() * 15) + 75
+        },
+        events: generateMatchEvents(match)
+      };
+    }
+
+    function generateMatchEvents(match) {
+      const events = [];
+      
+      // Add goals
+      for (let i = 0; i < match.homeScore; i++) {
+        events.push({
+          time: Math.floor(Math.random() * 90) + 1,
+          icon: '⚽',
+          text: `${match.home} scores!`
+        });
+      }
+      
+      for (let i = 0; i < match.awayScore; i++) {
+        events.push({
+          time: Math.floor(Math.random() * 90) + 1,
+          icon: '⚽',
+          text: `${match.away} scores!`
+        });
+      }
+      
+      // Add yellow cards
+      const yellowCards = Math.floor(Math.random() * 3) + 1;
+      for (let i = 0; i < yellowCards; i++) {
+        const team = Math.random() > 0.5 ? match.home : match.away;
+        events.push({
+          time: Math.floor(Math.random() * 90) + 1,
+          icon: '🟨',
+          text: `${team} receives a yellow card`
+        });
+      }
+      
+      // Add red cards occasionally
+      if (Math.random() > 0.8) {
+        const team = Math.random() > 0.5 ? match.home : match.away;
+        events.push({
+          time: Math.floor(Math.random() * 60) + 30,
+          icon: '🟥',
+          text: `${team} receives a red card`
+        });
+      }
+      
+      // Sort events by time
+      events.sort((a, b) => a.time - b.time);
+      
+      return events;
+    }
+
+    function closeModal() {
+      document.getElementById('matchModal').classList.remove('active');
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('matchModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+
+    // Initialize page
+    renderStandings();
+    renderMatches();
+  </script>
+</body>
+</html>
