@@ -1,6 +1,5 @@
 # League Central 
-The website localhost failed to work at the end due to some unidentified error therefore it is only a file
-file:///C:/Users/Narmadha/New%20folder%20(3)/LeagueCentral/templates/index.html
+
 ## Website Overview
 The increased global popularity and following of football has resulted in people seeking real-time match updates and detailed information about the matches, players, teams, and leagues. There are other existing solutions out there but they often lack integrations in live scores, schedules, league information, user experience personalization and a marketplace feature. Our website, **LeagueCentral**, aims to fill this need by providing a single window for all updates and information related to football, serving the needs of fans and enthusiasts.
 
@@ -438,5 +437,20 @@ Note: Only the development stage after design and setting up
 - [ ] have a way to choose your favorite teams specifically and track them
 - [ ] search bar feature
 
+## Instructions
+The website localhost failed to work at the end due to some unidentified error therefore it is only a file
+file:///C:/Users/Narmadha/New%20folder%20(3)/LeagueCentral/templates/index.html
+user may have to copy this link and paste it in the search engine to access the website
+- all the code and folders are added to README file
+
+## Acknowledgements 
+- https://www.w3schools.com/html/default.asp?authuser=1 - Used for HTML and CSS files 
+- https://www.markdownguide.org/cheat-sheet/?authuser=1 - Used for coding README file
+- https://claude.ai - Used to obtain code to style my pages
+- https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Your_first_website/Adding_interactivity?authuser=1 - Used for JavaScript
+- https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins?authuser=1 - USed for Flask
+- All images sourced online
+- Help from peers to fix errors
+- Help from online forums 
 
 
